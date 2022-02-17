@@ -1,5 +1,5 @@
 const React = require('react')
-const breads = require('../models/breads')
+// const breads = require('../models/breads')
 const Default = require('./layouts/defaults')
 
 function Show ({bread, index}) {
@@ -19,6 +19,7 @@ function Show ({bread, index}) {
             </p>
             <img src={bread.image} alt={bread.name} />
             <button><a href='/breads'>Go Home</a></button>
+            <a href={`/breads/${index}/edit`}><button>Edit</button></a>
             <form action={`/breads/${index}?_method=DELETE`} method="POST">
                 <input type='submit' value="DELETE"/>
             </form>
