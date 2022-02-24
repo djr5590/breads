@@ -18,6 +18,7 @@ function Show ({bread, index}) {
                 have gluten
             </p>
             <img src={bread.image} alt={bread.name} />
+            <p>{bread.getBakedBy()}</p>
             <button><a href='/breads'>Go Home</a></button>
             <a href={`/breads/${bread.id}/edit`}><button>Edit</button></a>
             <form action={`/breads/${bread.id}?_method=DELETE`} method="POST">
