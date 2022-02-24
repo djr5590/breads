@@ -32,7 +32,7 @@ app.get('*', (req, res) => {
 
 // Database
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
-  .then(() => console.log('db connected'))
+  // .then(() => console.log('db connected'))
   .catch(e => console.log(e))
 
 // LISTEN
