@@ -25,6 +25,10 @@ app.use(methodOverride('_method'))
 // Breads
 app.use('/breads', breadsController)
 
+// Bakers
+const bakersController = require('./controllers/bakers_controllers.js')
+app.use('/bakers', bakersController)
+
 // 404 Page
 app.get('*', (req, res) => {
   res.send('404')
