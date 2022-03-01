@@ -1,9 +1,9 @@
 const React = require('react')
-const baker = require('../controllers/bakers_controllers')
-const baker_seeds = require('../models/baker_seeds')
+// const bakers = require('../controllers/bakers_controllers')
+// const baker_seeds = require('../models/baker_seeds')
 const Default = require('./layouts/defaults')
 
-function New({baker}) {
+function New({ bakers }) {
   return (
     <Default>
       <h2>Add a new bread</h2>
@@ -25,7 +25,7 @@ function New({baker}) {
           id="image" />
         <label htmlFor="baker">Baker</label>
         <select name="baker" id="baker">
-          {baker.map((baker) => {
+          {bakers.map((baker) => {
             return (
               <option value={baker.id} key={baker.id}>{baker.name}</option>
             )
