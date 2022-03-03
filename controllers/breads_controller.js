@@ -2,18 +2,20 @@ const express = require('express')
 const breads = express.Router()
 const Bread = require('../models/breads.js')
 const Baker = require('../models/baker.js')
+const baker = require("./bakers_controllers.js")
 
 // INDEX
 breads.get('/', (req, res) => {
-  Bread.find()
-    .then(foundBreads => {
+  Baker.find().then((foundBakers) => {
+    Bread.find().then(foundBreads => {
       console.log(foundBreads)
       res.render('Index', {
-        "breads": foundBreads,
+        breads: foundBreads,
+        bakers: foundBakers,
         "title": 'Index Page'
       })
     })
-  // res.send(Bread)
+  })
 })
 
 // NEW
@@ -26,29 +28,15 @@ breads.get('/new', (req, res) => {
     })
 })
 
-// EDIT
-breads.get('/:id/edit', (req, res) => {
-  Baker.find()
-    .then(foundBakers => {
-      Bread.findById(req.params.id)
-        .then(foundBread => {
-          res.render('edit', {
-            bread: foundBread,
-            bakers: foundBakers
-          })
-        })
-    })
-})
-
 // SHOW
 breads.get('/:id', (req, res) => {
   Bread.findById(req.params.id)
-    .populate('Baker')
+    .populate('baker')
     .then(foundBread => {
-      const bakedBy = foundBread.getBakedBy()
-      console.log(bakedBy)
+      // const bakedBy = foundBread.getBakedBy()
+      console.log('testing2')
       res.render('show', {
-        bread: foundBread
+        breads: foundBread
       })
     })
     .catch(err => {
@@ -56,16 +44,20 @@ breads.get('/:id', (req, res) => {
     })
 })
 
-// breads.get('/:arrayIndex', (req, res) => {
-//   if (Bread[req.params.arrayIndex]) { 
-//     res.render('Show', {
-//       bread:Bread[req.params.arrayIndex],
-//       index: req.params.arrayIndex,
-//     })
-//   } else {
-//     res.send('404')
-//   }
-// })
+// EDIT
+breads.get('/:id/edit', (req, res) => {
+  Baker.find()
+    .then(foundBakers => {
+      Bread.findById(req.params.id)
+        .then(foundBread => {
+          res.render('edit', {
+            breads: foundBread,
+            bakers: foundBakers
+          })
+        })
+    })
+})
+
 
 // CREATE
 breads.post('/', async (req, res) => {
