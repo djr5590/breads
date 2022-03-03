@@ -43,5 +43,5 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 // LISTEN
 app.listen(PORT, () => {
-  console.log('nomming at port: ${PORT}');
+  console.log('nomming at port:', PORT);
 })

@@ -1,7 +1,7 @@
 const express = require('express')
 const baker = express.Router()
 const Baker = require('../models/baker')
-const bakerSeed = require('../models/baker_seed')
+const bakerSeed = require('../models/baker_seeds')
 
 // controllers
 

@@ -17,7 +17,7 @@ const breadSchema = new Schema({
   },
   baker: {
     type: Schema.Types.ObjectId,
-    ref: "Baker"
+    ref: 'Baker'
   }
 })
 
