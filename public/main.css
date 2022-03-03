@@ -8,3 +8,45 @@ img {
     margin: auto;
 }
   
+
+body {
+    background-color: floralwhite;
+}
+
+.wrapper{
+    margin: 2rem;
+    text-align: center;
+}
+
+img {
+    width: 50%;
+    display: block;
+    margin: auto;
+}
+button > a {
+    text-decoration: none;
+}
+
+#French{
+    transform: rotate(90deg);
+}
+
+#delete-btn {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+}
+
+#edit-btn{
+    margin-top: 2em;
+    background-color: rgba(255, 168, 6, 0.911);
+    color: white;
+}
+
+.error{
+    color: red;
+}
+
+.li-no-style{
+    list-style: none;
+    color: brown;
+}

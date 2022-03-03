@@ -1,7 +1,7 @@
 const React = require('react')
 // const bakers = require('../controllers/bakers_controllers')
 //const baker_seeds = require('../models/baker_seeds')
-const Default = require('./layouts/defaults')
+const Default = require('./layouts/default')
 
 function New({ bakers }) {
   return (

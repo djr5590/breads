@@ -1,7 +1,7 @@
 const React = require('react')
 const breads = require('../controllers/breads_controller')
-const Bread = require('../models/breads')
-const Default = require('./layouts/defaults')
+const Bread = require('../models/bread')
+const Default = require('./layouts/default')
 const Baker = require('../models/baker.js')
 
 function Show ({ bread, index }) {
