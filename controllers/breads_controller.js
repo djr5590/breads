@@ -1,131 +1,130 @@
 const express = require('express')
 const breads = express.Router()
-const Bread = require('../models/breads.js')
-const Baker = require('../models/baker.js')
-const baker = require("./bakers_controllers.js")
+const Bread = require('../models/bread')
+const seedArray = require('../models/seedArray')
+const Baker = require('../models/baker')
 
 // INDEX
-breads.get('/', (req, res) => {
-  Baker.find().then((foundBakers) => {
-    Bread.find().then(foundBreads => {
-      console.log(foundBreads)
-      res.render('Index', {
-        breads: foundBreads,
-        bakers: foundBakers,
-        "title": 'Index Page'
-      })
-    })
-  })
-})
-
-// NEW
-breads.get('/new', (req, res) => {
-  Baker.find()
-    .then(foundBakers => {
-      res.render('new', {
-        bakers: foundBakers
-      })
-    })
-})
-
-// SHOW
-breads.get('/:id', (req, res) => {
-  Bread.findById(req.params.id)
-    .populate('baker')
-    .then(foundBread => {
-      // const bakedBy = foundBread.getBakedBy()
-      console.log('testing2')
-      res.render('show', {
-        breads: foundBread
-      })
-    })
-    .catch(err => {
-      res.send('404')
-    })
-})
-
-// EDIT
-breads.get('/:id/edit', (req, res) => {
-  Baker.find()
-    .then(foundBakers => {
-      Bread.findById(req.params.id)
-        .then(foundBread => {
-          res.render('edit', {
-            breads: foundBread,
-            bakers: foundBakers
-          })
-        })
-    })
-})
-
-
-// CREATE
-breads.post('/', async (req, res) => {
+breads.get('/', async (req, res) => {
   try {
-    if (!req.body.image) {
-      req.body.image = undefined
-    }
-    if (req.body.hasGluten === 'on') {
-      req.body.hasGluten = true
-    } else {
-      req.body.hasGluten = false
-    }
-    await Bread.create(req.body)
-    res.redirect('/breads')
+    const foundBreads = await Bread.find().populate({
+      path:'baker', 
+      options: {limit: 2}
+    }).limit(10).lean()
+    const foundBakers = await Baker.find().lean()
+    res.render('index', {
+      breads: foundBreads,
+      bakers: foundBakers, 
+      title: 'Index Page'
+    })
   } catch (error) {
-    res.send(error);
+    console.error(error)
+  }
+})
+// Joey Breads
+breads.get('/baker/:baker', async (req, res) =>{
+  try {
+    const breadsArr = await Bread.findByBaker(req.params.baker)
+    console.log(req.params.baker)
+    res.render('bakerBreads', {
+      breads : breadsArr,
+      baker : req.params.baker
+    })
+  } catch (error) {
+    const { message } = error
+    res.render('404', { message: message } )
+  }
+})
+// Create
+breads.post('/', async (req, res) => {
+  if (!req.body.image) {
+    req.body.image = undefined
+  }
+  if (req.body.hasGluten === 'on') {
+    req.body.hasGluten = true
+  } else {
+    req.body.hasGluten = false
+  } try {
+    const createdBread = await Bread.create(req.body)
+    res.redirect('/breads')
+    
+  } catch (error) {
+    const { message } = error
+    res.render('404', { message: message })
   }
 })
 
-// DELETE
-breads.delete('/:id', (req, res) => {
-  Bread.findByIdAndDelete(req.params.id)
-    .then(deleteBread => {
-      res.status(303).redirect('/breads')
+// New
+breads.get('/new', async (req, res) => {
+  try {
+    const foundBakers = await Baker.find()
+    res.render('new', { bakers: foundBakers })
+    
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+
+// EDIT
+breads.get('/:id/edit', async (req, res) => {
+  try {
+    const foundBread = await Bread.findById(req.params.id)
+    const  foundBakers = await Baker.find()
+    res.render('edit', {
+      bread: foundBread,
+      bakers: foundBakers
     })
+  } catch (error) {
+    console.error(error)
+  }
+})
+// SHOW
+breads.get('/:id', async (req, res) => {
+try {
+  let foundBread = await Bread.findById(req.params.id).populate('baker')
+  res.render('show', { bread: foundBread })
+} catch (error) {
+  res.render('404')
+}
+
+})
+// DELETE
+breads.delete('/:id', async (req, res) => {
+try {
+  let deletedBread = await Bread.findByIdAndDelete(req.params.id)
+  res.status(303).redirect('/breads')
+
+} catch (error) {
+  res.render('404')
+}
 })
 
 // UPDATE
-breads.put('/:id', (req, res) => {
+breads.put('/:id', async (req, res) => {
   if (req.body.hasGluten === 'on') {
     req.body.hasGluten = true
   } else {
     req.body.hasGluten = false
   }
-  Bread.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then(updatedBread => {
-      console.log(updatedBread)
-      res.redirect(`/breads/${req.params.id}`)
-    })
+
+  try {
+    let updatedBread = await Bread.findByIdAndUpdate(req.params.id,  req.body, { new: true })
+    res.redirect(`/breads/${req.params.id}`)
+  } catch (error) {
+   res.render('404')
+  }
 })
 
-// BONUS .insertMany
-breads.get('/data/seed', (req, res) => {
-  Bread.insertMany([
-    {
-      name: 'Rye',
-      hasGluten: true,
-      image: 'https://images.unsplash.com/photo-1595535873420-a599195b3f4a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
-    },
-    {
-      name: 'French',
-      hasGluten: true,
-      image: 'https://images.unsplash.com/photo-1534620808146-d33bb39128b2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-    },
-    {
-      name: 'Gluten Free',
-      hasGluten: false,
-      image: 'https://images.unsplash.com/photo-1546538490-0fe0a8eba4e6?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80',
-    },
-    {
-      name: 'Pumpernickel',
-      hasGluten: true,
-      image: 'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80',
-    }
-  ])
-    .then(createdBreads => {
-      res.redirect('/breads')
-    })
+// SEED ROUTE
+
+breads.get('/data/seed', async (req, res) =>{
+  try {
+    let createdBreads = await Bread.insertMany(seedArray)
+    res.redirect('/breads')
+  } catch (error) {
+   console.log(error) 
+  }
 })
 
 module.exports = breads
